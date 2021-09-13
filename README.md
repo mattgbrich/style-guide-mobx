@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+# MobX React App Style Guide and POC
+This is intended to be a style guide to be used for React applications using MobX. This specific app also includes a POC for 
+virtual "routing" using JavaScript and state to handle view changes. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## General Considerations
+### Components
+- All components should be function components, unless there is a specific need to use a class
+- Use function declarations
+- All Component names must be TitleCase (only Component files should be named using TitleCase)
+- Files containing components should be named the same as the component they contain
+- Only one component per file, unless there is a specific need to do otherwise
 
-## Available Scripts
+Example:
+```javascript
+// /components/DisplayUsers.js
+import React from 'react';
 
-In the project directory, you can run:
+function DisplayUsers () {
+  return ();
+}
 
-### `npm start`
+export default DisplayUsers;
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- If a Component is simple and only requires the single Component file, then it can be a single file. Otherwise,
+if the Component requires additional specific files (`styles.js` file, additional related Components) then create a Folder
+that is named the same as the Component, and put the main Component inside the folder with the file name `index.js`
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Example:
+```
+components/
+    DisplayUsers/
+        index.js
+        styles.js
+        UserRow.js
+        UserDetail.js
+```
 
-### `npm test`
+### Utility/Helper Methods
+- Utility/helper methods should always go in a separate `utils.js` file.
+- Never put logic handlers in the Component file. 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Styling
+- Always use JSS. Only use CSS if it is existing client CSS code that must be used. Don't create our own CSS.
+- No inline styles
+- Write styles in a separate file titled `styles.js`, not in the Component file.
+- All global style rules will be managed in the MUI Theme in the `/styles` folder. 
+- Don't hard code any color values. Colors may only be used through the MUI theme, and must all be defined only once in the `palette.js` file
+- Colors should rarely be added (if ever). Before adding any new colors discuss the need for the new color with the team lead. 
 
-### `npm run build`
+### Dependency Configurations
+- Any dependency configurations, or other global level app configurations go in the `/config` folder
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### State Management
+- All state maintained in the `/store` folder
+- We'll access all stores through the `useStore` hook.
+- Any other store can be accessed from within any given store by referencing the `rootStore`.
+- Put all async actions within actions in the store methods
+- If a data set for a store has associated API endpoints
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+##### To Create a New Store
+1. Create a new folder within `/store` 
+2. Add the store index file containing the class for the new store
+3. Import the new store into the root store and add it to the constructor
